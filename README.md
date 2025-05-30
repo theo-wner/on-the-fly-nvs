@@ -258,9 +258,7 @@ python scripts/render_path.py -m ${MODEL_PATH} --render_path ${RENDER_PATH} --ou
 ```
 Here, we render the reconstruction of the garden scene along the optimized poses (that `train.py` saves in `${MODEL_PATH}/colmap`):
 ```bash
-python scripts/render_path.py -m results/MipNeRF360/garden \
-                              --render_path results/MipNeRF360/garden/colmap \
-                              --out_dir results/MipNeRF360/garden/video
+python scripts/render_path.py -m results/MipNeRF360/garden --render_path results/MipNeRF360/garden/colmap --out_dir results/MipNeRF360/garden/video
 ```
 
 <details>
