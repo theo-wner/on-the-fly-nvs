@@ -66,7 +66,12 @@ conda create -n onthefly_nvs python=3.12 -y
 conda activate onthefly_nvs
 ```
 Default setup with CUDA 12.8 (check your compute platform with `nvcc --version`):
+```pwsh
+# Windows Only
+SET DISTUTILS_USE_SDK=1 # (If you use cmd.exe)
+$env:DISTUTILS_USE_SDK=1 # (If you use PowerShell)
 ```
+```bash
 # Get the versions corresponding to your compute platform at https://pytorch.org/
 pip install torch torchvision xformers --index-url https://download.pytorch.org/whl/cu128
 pip install cupy-cuda12x
