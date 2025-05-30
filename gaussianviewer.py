@@ -16,7 +16,6 @@ from imgui_bundle import imgui_ctx, imgui
 from enum import IntEnum, auto
 import time
 
-from utils import draw_poses, draw_anchors # TODO: move this to viewer?
 from graphdecoviewer import Viewer
 from graphdecoviewer.types import ViewerMode
 from graphdecoviewer.widgets.image import TorchImage
@@ -54,6 +53,9 @@ class GaussianViewer(Viewer):
 
         global SceneModel
         from scene.scene_model import SceneModel
+
+        global draw_poses, draw_anchors
+        from utils import draw_poses, draw_anchors # TODO: move this to viewer?
 
     @classmethod
     def from_scene(cls, scene_dir: str, mode: ViewerMode, args: Namespace):
