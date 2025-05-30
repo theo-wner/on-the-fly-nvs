@@ -245,7 +245,7 @@ To set up the remote viewer on a different machine, follow these steps:
 ```bash
 conda create -n onthefly_nvs_remoteviewer python=3.12 -y
 conda activate onthefly_nvs_remoteviewer
-pip install submodules/pythonviewer
+pip install submodules/graphdecoviewer
 ```
 </details>
 
