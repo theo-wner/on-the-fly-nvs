@@ -74,13 +74,14 @@ class StreamDataset:
         frame = self.frame_queue.get(block=True)
         self.num_frames += 1
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame = cv2.resize(
-            frame,
-            (0, 0),
-            fx=1 / self.downsampling,
-            fy=1 / self.downsampling,
-            interpolation=cv2.INTER_AREA,
-        )
+        if self.downsampling > 0.0 and self.downsampling != 1.0: 
+            frame = cv2.resize(
+                frame,
+                (0, 0),
+                fx=1 / self.downsampling,
+                fy=1 / self.downsampling,
+                interpolation=cv2.INTER_AREA,
+            )
         image = torch.from_numpy(frame).permute(2, 0, 1).cuda().float() / 255.0
         info = {"is_test": False}
         return image, info
