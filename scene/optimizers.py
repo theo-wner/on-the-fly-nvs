@@ -65,12 +65,13 @@ class SparseGaussianAdam(BaseAdam):
         self.lr_dict = lr_dict
         # Convert learning rates to tensors
         for key, param in self.params.items():
-            if key not in self.lr_dict:
-                param["lr"] = torch.tensor(
-                    param["lr"], dtype=torch.float, device="cuda"
-                )
-            else:
-                param["lr"] = torch.empty(0, dtype=torch.float, device="cuda")
+            if "lr" not in param or type(param["lr"]) is not torch.Tensor:
+                if key not in self.lr_dict:
+                    param["lr"] = torch.tensor(
+                        param["lr"], dtype=torch.float, device="cuda"
+                    )
+                else:
+                    param["lr"] = torch.empty(0, dtype=torch.float, device="cuda")
 
     @torch.no_grad()
     def step(self, visibility, N):
