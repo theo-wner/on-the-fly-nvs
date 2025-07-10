@@ -6,3 +6,4 @@ submodules/diff-gaussian-rasterization
 submodules/fused-ssim
 submodules/simple-knn
 submodules/graphdecoviewer
+submodules/mocap-ids-stream

@@ -34,6 +34,8 @@ from gaussianviewer import GaussianViewer
 from webviewer.webviewer import WebViewer
 from graphdecoviewer.types import ViewerMode
 from utils import align_mean_up_fwd, increment_runtime
+from streams.ids_stream import IDSStream
+from streams.mocap_stream import MoCapStream
 
 if __name__ == "__main__":
     torch.random.manual_seed(0)
@@ -45,6 +47,12 @@ if __name__ == "__main__":
     # Initialize dataloader
     if "://" in args.source_path:
         dataset = StreamDataset(args.source_path, args.downsampling)
+        is_stream = True
+    elif args.source_path == "ids":
+        dataset = IDSStream(frame_rate=30, 
+                           exposure_time=20000, 
+                           resize=(1000, 1000))
+        time.sleep(1)  # Wait for the stream to start
         is_stream = True
     else:
         dataset = ImageDataset(args)
