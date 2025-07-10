@@ -7,3 +7,6 @@
 [submodule "submodules/graphdecoviewer"]
 	path = submodules/graphdecoviewer
 	url = https://github.com/graphdeco-inria/graphdecoviewer.git
+[submodule "submodules/mocap-ids-stream"]
+	path = submodules/mocap-ids-stream
+	url = git@github.com:theo-wner/mocap-ids-stream.git
