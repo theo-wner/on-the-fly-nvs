@@ -14,3 +14,5 @@ submodules/diff-gaussian-rasterization
 submodules/fused-ssim
 submodeules/graphdecodeviewer
 submodules/simple-knn
+submodules/mocap-ids-stream/build
+submodules/mocap-ids-stream/mocap_ids_stream.egg-info
