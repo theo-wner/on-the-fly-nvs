@@ -52,7 +52,6 @@ if __name__ == "__main__":
         dataset = IDSStream(frame_rate=30, 
                            exposure_time=20000, 
                            resize=(1000, 1000))
-        time.sleep(1)  # Wait for the stream to start
         is_stream = True
     else:
         dataset = ImageDataset(args)
