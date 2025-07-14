@@ -7,3 +7,6 @@ Gaussian_Viewer.ini
 .vscode
 data/
 results*
+
+submodules/mocap-ids-stream/build/
+submodules/mocap-ids-stream/mocap_ids_stream.egg-info/
