@@ -7,12 +7,3 @@ Gaussian_Viewer.ini
 .vscode
 data/
 results*
-
-# Added by Theo for the project to stay consistent
-submodules/Depth-Anything-V2
-submodules/diff-gaussian-rasterization
-submodules/fused-ssim
-submodeules/graphdecodeviewer
-submodules/simple-knn
-submodules/mocap-ids-stream/build
-submodules/mocap-ids-stream/mocap_ids_stream.egg-info
