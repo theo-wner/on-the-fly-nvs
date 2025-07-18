@@ -49,9 +49,12 @@ if __name__ == "__main__":
         dataset = StreamDataset(args.source_path, args.downsampling)
         is_stream = True
     elif args.source_path == "ids":
-        dataset = IDSStream(frame_rate=30, 
-                           exposure_time=20000, 
-                           resize=(1000, 1000))
+        dataset = IDSStream(frame_rate='max', 
+                            exposure_time='auto', 
+                            white_balance='auto',
+                            gain='auto',
+                            gamma=1.0,
+                            resize=(1000, 1000))
         is_stream = True
     else:
         dataset = ImageDataset(args)
