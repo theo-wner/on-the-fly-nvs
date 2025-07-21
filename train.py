@@ -53,7 +53,7 @@ if __name__ == "__main__":
                             exposure_time='auto', 
                             white_balance='auto',
                             gain='auto',
-                            gamma=1.0,
+                            gamma=1.5,
                             resize=(1000, 1000))
         is_stream = True
     else:
