@@ -39,6 +39,8 @@ def get_args():
                         help="Compare poses to COLMAP")
     parser.add_argument('--use_colmap_poses', action='store_true',
                         help="Load COLMAP data for pose and intrinsics initialization")
+    parser.add_argument('--ignore_colmap_pose_alignment', action='store_true',
+                    help="Disregards COLMAP pose scaling and setting first Rt as identity")
         
     ## Learning Rates
     parser.add_argument('--lr_poses', type=float, default=1e-4, help="Pose learning rate")

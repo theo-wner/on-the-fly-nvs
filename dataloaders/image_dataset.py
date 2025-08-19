@@ -91,7 +91,8 @@ class ImageDataset:
             assert has_all_poses, (
                 "COLMAP poses are required but not all images have poses."
             )
-            self.align_colmap_poses()
+            if not args.ignore_colmap_pose_alignment:
+                self.align_colmap_poses()
 
         if args.eval_poses and not has_all_poses:
             logging.warning(
