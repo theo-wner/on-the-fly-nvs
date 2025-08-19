@@ -38,7 +38,6 @@ from utils import align_mean_up_fwd, increment_runtime
 from streams.ids_stream import IDSStream
 from streams.mocap_stream import MoCapStream
 from streams.stream_matcher import StreamMatcher
-from streams.custom_image_dataset import CustomImageDataset
 # CHANGE BY THEO END
 
 if __name__ == "__main__":
@@ -78,14 +77,13 @@ if __name__ == "__main__":
 
         dataset = StreamMatcher(
             cam_stream, mocap_stream, resync_interval=10,
-            calib_base_path="/home/tkapler/on-the-fly-nvs/submodules/mocap-ids-stream/data",
-            calib_run="latest",
+            calib_path="latest",
             downsampling=2
         )
         dataset.start_timing()
         is_stream = True
     else:
-        dataset = CustomImageDataset(args.source_path)
+        dataset = ImageDataset(args.source_path)
         is_stream = False
     # CHANGE BY THEO END
 

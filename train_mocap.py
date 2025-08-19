@@ -11,6 +11,7 @@
 
 import os
 import time
+import shutil
 
 import numpy as np
 import torch
@@ -34,7 +35,6 @@ from graphdecoviewer.types import ViewerMode
 from streams.ids_stream import IDSStream
 from streams.mocap_stream import MoCapStream
 from streams.stream_matcher import StreamMatcher
-from streams.custom_image_dataset import CustomImageDataset
 import cv2
 
 if __name__ == "__main__":
@@ -50,7 +50,6 @@ if __name__ == "__main__":
     args.lr_depth_scale_offset = 0
     args.position_lr_init = 0
     args.position_lr_decay = 0
-    args.fix_focal = True
     
     if args.source_path == "ids":
         cam_stream = IDSStream(frame_rate=30,
@@ -67,9 +66,8 @@ if __name__ == "__main__":
 
         dataset = StreamMatcher(
             cam_stream, mocap_stream, resync_interval=10,
-            calib_base_path="/home/tkapler/on-the-fly-nvs/submodules/mocap-ids-stream/data",
-            calib_run="latest",
-            downsampling=2
+            calib_path="latest",
+            downsampling=None
         )
         dataset.start_timing()
         is_stream = True
@@ -121,15 +119,25 @@ if __name__ == "__main__":
     min_displacement = max(args.min_displacement * width, 30)
     metrics = {}
 
-    # If capturing live: Save captured images, mocap poses and intrinsics (only focal) to model_path
+    # If capturing live: Save captured images and poses to model_path
     if is_stream:
         images_dir = os.path.join(args.model_path, "images")
-        os.makedirs(os.path.join(args.model_path, "images"), exist_ok=True)
-        poses_file = open(os.path.join(args.model_path, "poses.txt"), "w")
-        poses_file.write("IMAGE_ID QW QX QY QZ TX TY TZ IMAGE_NAME\n")
-        intrinsics_file = open(os.path.join(args.model_path, "intrinsics.txt"), "w")
-        intrinsics_file.write("FOCAL\n")
-        intrinsics_file.write(f"{dataset.get_focal():.6f}\n")
+        os.makedirs(images_dir)
+
+        poses_dir = os.path.join(args.model_path, "sparse", "0")
+        os.makedirs(poses_dir)
+        poses_path = os.path.join(poses_dir, "images.txt")
+
+        points3D_path = os.path.join(poses_dir, "points3D.txt") # Dummy file
+        with open(points3D_path, "w") as f:
+            pass
+
+        poses_file = open(poses_path, "w")
+        poses_file.write("# Image list with two lines of data per image:\n")
+        poses_file.write("#   IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME\n")
+        poses_file.write("#   POINTS2D[] as (X, Y, POINT3D_ID)\n")
+        poses_file.write("# Number of images: PLACEHOLDER, mean observations per image: 0\n")
+        poses_file.write("# These poses have been captured with a MoCap system\n")
 
     try:
         for frameID in pbar:
@@ -166,7 +174,7 @@ if __name__ == "__main__":
                 rot = info["pose"]["rot"]
                 poses_file.write(
                     f"{n_keyframes} {rot[3]:.6f} {rot[0]:.6f} {rot[1]:.6f} {rot[2]:.6f} "
-                    f"{pos[0]:.6f} {pos[1]:.6f} {pos[2]:.6f} {image_name}\n"
+                    f"{pos[0]:.6f} {pos[1]:.6f} {pos[2]:.6f} 1 {image_name}\n\n"
                 )
                 poses_file.flush()
 
@@ -211,7 +219,7 @@ if __name__ == "__main__":
                 # Determine if we should add a keyframe based on its velocity
                 v_pos = info["pose_velocity"]["pos"]
                 v_rot = info["pose_velocity"]["rot"]
-                should_add_keyframe_velocity = (v_pos < 0.1 and v_rot < 0.1)
+                should_add_keyframe_velocity = (v_pos < 0.3 and v_rot < 0.3)
                 
                 if not should_add_keyframe_velocity:
                     continue
@@ -367,8 +375,12 @@ if __name__ == "__main__":
     print("Cleaning up threads...")
     scene_model.join_optimization_thread()
     if is_stream:
+        calib_cameras_path = os.path.join(dataset.calib_path, "sparse", "0", "cameras.txt") # Copy cameras.txt from calibration path to model_path
+        dataset_cameras_path = os.path.join(args.model_path, "sparse", "0", "cameras.txt")
+        shutil.copy2(calib_cameras_path, dataset_cameras_path)
         dataset.stop()
         cam_stream.stop()
         mocap_stream.stop()
         poses_file.close()
+
 
