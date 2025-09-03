@@ -67,13 +67,13 @@ if __name__ == "__main__":
         dataset = StreamMatcher(
             cam_stream, mocap_stream, resync_interval=10,
             calib_path="latest",
-            downsampling=None
+            downsampling=2
         )
         dataset.start_timing()
         is_stream = True
 
     else:
-        dataset = ImageDataset(args.source_path)
+        dataset = ImageDataset(args)
         is_stream = False
 
     height, width = dataset.get_image_size()
