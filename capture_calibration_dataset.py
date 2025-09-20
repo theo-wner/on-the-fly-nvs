@@ -34,7 +34,7 @@ else:
 print(f"Using calibration path: {calib_path}")
 
 # Initialize streams
-cam_stream = IDSStream(frame_rate='max', 
+cam_stream = IDSStream(frame_rate=45, 
                         exposure_time='auto', 
                         white_balance='auto',
                         gain='auto',
@@ -42,17 +42,14 @@ cam_stream = IDSStream(frame_rate='max',
 
 mocap_stream = MoCapStream(client_ip="172.22.147.168", # 168 for workstation, 172 for laptop
                             server_ip="172.22.147.182", 
-                            rigid_body_id=2, # 1 for calibration wand, 2 for camera rig
-                            buffer_size=15)
+                            buffer_size=20)
 
-matcher = StreamMatcher(cam_stream, mocap_stream, resync_interval=1, calib_path=None) # No calib because for hand-eye calibration we need the raw MoCap poses
-matcher.start_timing()
+matcher = StreamMatcher(cam_stream, mocap_stream, rb_id=2, calib_path=None, downsampling=None) # No calib because for hand-eye calibration we need the raw MoCap poses
 
 # Capture dataset
 capture_dataset(matcher, calib_path, mode='auto')
 
 # Stop streams
-matcher.stop()
 cam_stream.stop()
 mocap_stream.stop()
 

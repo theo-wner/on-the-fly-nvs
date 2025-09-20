@@ -48,14 +48,14 @@ if __name__ == "__main__":
     args = get_args()
 
     args.use_colmap_poses = True
-    #args.source_path = "ids"
+    args.source_path = "ids"
     args.viewer_mode = "local"
     args.lr_poses = 0
     args.lr_exposure = 0
     args.lr_depth_scale_offset = 0
-    args.position_lr_init = 0
-    args.position_lr_decay = 0
-    args.fix_focal = True
+    #args.position_lr_init = 0
+    #args.position_lr_decay = 0
+    #args.fix_focal = True
 
     # Initialize dataloader
     if "://" in args.source_path:
@@ -63,24 +63,17 @@ if __name__ == "__main__":
         is_stream = True
     # CHANGE BY THEO START
     elif args.source_path == "ids":
-        cam_stream = IDSStream(frame_rate=30,
-                            exposure_time=20000,
-                            white_balance='auto',
-                            gain='auto',
-                            gamma=1.5)
+        cam_stream = IDSStream(frame_rate=45, 
+                                exposure_time=20000, 
+                                white_balance='auto',
+                                gain='auto',
+                                gamma=1.5)
 
-        mocap_stream = MoCapStream(
-            client_ip="172.22.147.168",
-            server_ip="172.22.147.182",
-            rigid_body_id=2,
-            buffer_size=15)
+        mocap_stream = MoCapStream(client_ip="172.22.147.168", # 168 for workstation, 172 for laptop
+                                    server_ip="172.22.147.182", 
+                                    buffer_size=20)
 
-        dataset = StreamMatcher(
-            cam_stream, mocap_stream, resync_interval=10,
-            calib_path="latest",
-            downsampling=2
-        )
-        dataset.start_timing()
+        dataset = StreamMatcher(cam_stream, mocap_stream, rb_id=2, calib_path="latest", downsampling=None)
         is_stream = True
     else:
         dataset = ImageDataset(args.source_path)
@@ -163,7 +156,7 @@ if __name__ == "__main__":
 
                 # CHANGE BY THEO START
                 if args.source_path == "ids":
-                    if info["is_valid"] == False:
+                    if info is None:
                         continue
                 # CHANGE BY THEO END
 
@@ -177,7 +170,7 @@ if __name__ == "__main__":
 
             # CHANGE BY THEO START
             if args.source_path == "ids":
-                if info["is_valid"] == False:
+                if info is None:
                     continue
             # CHANGE BY THEO END
             
@@ -197,9 +190,9 @@ if __name__ == "__main__":
             
             if is_stream:
                 # Determine if we should add a keyframe based on its velocity
-                v_pos = info["pose_velocity"]["pos"]
-                v_rot = info["pose_velocity"]["rot"]
-                should_add_keyframe_velocity = (v_pos < 0.1 and v_rot < 0.1)
+                m_pos = info["m_pos"]
+                m_rot = info["m_rot"]
+                should_add_keyframe_velocity = (m_pos < 0.5 and m_rot < 0.1)
                 if not should_add_keyframe_velocity:
                     continue
 

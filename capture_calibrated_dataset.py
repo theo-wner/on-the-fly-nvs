@@ -49,7 +49,7 @@ else:
 print(f"Using dataset path: {dataset_path}")
 
 # Initialize streams
-cam_stream = IDSStream(frame_rate='max', 
+cam_stream = IDSStream(frame_rate=45, 
                         exposure_time=20000, 
                         white_balance='auto',
                         gain='auto',
@@ -57,11 +57,9 @@ cam_stream = IDSStream(frame_rate='max',
 
 mocap_stream = MoCapStream(client_ip="172.22.147.168", # 168 for workstation, 172 for laptop
                             server_ip="172.22.147.182", 
-                            rigid_body_id=2, # 1 for calibration wand, 2 for camera rig
-                            buffer_size=15)
+                            buffer_size=20)
 
-matcher = StreamMatcher(cam_stream, mocap_stream, resync_interval=10, calib_path=calib_path)
-matcher.start_timing()
+matcher = StreamMatcher(cam_stream, mocap_stream, rb_id=2, calib_path=calib_path, downsampling=None)
 
 # Capture dataset
 capture_dataset(matcher, dataset_path, mode='auto')
@@ -77,7 +75,6 @@ with open(points3D_path, "w") as f:
     pass
 
 # Stop streams
-matcher.stop()
 cam_stream.stop()
 mocap_stream.stop()
 

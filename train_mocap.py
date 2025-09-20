@@ -48,28 +48,21 @@ if __name__ == "__main__":
     args.lr_poses = 0
     args.lr_exposure = 0
     args.lr_depth_scale_offset = 0
-    args.position_lr_init = 0
-    args.position_lr_decay = 0
+    #args.position_lr_init = 0
+    #args.position_lr_decay = 0
     
     if args.source_path == "ids":
-        cam_stream = IDSStream(frame_rate=30,
-                            exposure_time=20000,
-                            white_balance='auto',
-                            gain='auto',
-                            gamma=1.5)
+        cam_stream = IDSStream(frame_rate=45, 
+                                exposure_time=20000, 
+                                white_balance='auto',
+                                gain='auto',
+                                gamma=1.5)
 
-        mocap_stream = MoCapStream(
-            client_ip="172.22.147.168",
-            server_ip="172.22.147.182",
-            rigid_body_id=2,
-            buffer_size=15)
+        mocap_stream = MoCapStream(client_ip="172.22.147.168", # 168 for workstation, 172 for laptop
+                                    server_ip="172.22.147.182", 
+                                    buffer_size=20)
 
-        dataset = StreamMatcher(
-            cam_stream, mocap_stream, resync_interval=10,
-            calib_path="latest",
-            downsampling=2
-        )
-        dataset.start_timing()
+        dataset = StreamMatcher(cam_stream, mocap_stream, rb_id=2, calib_path="latest", downsampling=3)
         is_stream = True
 
     else:
@@ -161,7 +154,7 @@ if __name__ == "__main__":
             # Get data
             image, info = dataset.getnext()
 
-            if info["is_valid"] is False:
+            if info is None:
                 continue
 
             if is_stream:
@@ -170,8 +163,8 @@ if __name__ == "__main__":
                 image_save = (image.permute(1, 2, 0).cpu().numpy() * 255).astype(np.uint8)
                 image_save = cv2.cvtColor(image_save, cv2.COLOR_RGB2BGR)
                 cv2.imwrite(os.path.join(images_dir, image_name), image_save)
-                pos = info["pose"]["pos"]
-                rot = info["pose"]["rot"]
+                pos = info["pos"]
+                rot = info["rot"]
                 poses_file.write(
                     f"{n_keyframes} {rot[3]:.6f} {rot[0]:.6f} {rot[1]:.6f} {rot[2]:.6f} "
                     f"{pos[0]:.6f} {pos[1]:.6f} {pos[2]:.6f} 1 {image_name}\n\n"
@@ -217,9 +210,9 @@ if __name__ == "__main__":
             
             if is_stream:
                 # Determine if we should add a keyframe based on its velocity
-                v_pos = info["pose_velocity"]["pos"]
-                v_rot = info["pose_velocity"]["rot"]
-                should_add_keyframe_velocity = (v_pos < 0.3 and v_rot < 0.3)
+                m_pos = info["m_pos"]
+                m_rot = info["m_rot"]
+                should_add_keyframe_velocity = (m_pos < 0.5 and m_rot < 0.2)
                 
                 if not should_add_keyframe_velocity:
                     continue
