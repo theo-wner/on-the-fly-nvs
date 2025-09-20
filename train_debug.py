@@ -437,6 +437,5 @@ if __name__ == "__main__":
     print("Cleaning up threads...")
     scene_model.join_optimization_thread()
     if args.source_path == "ids":
-        dataset.stop()
         cam_stream.stop()
         mocap_stream.stop()

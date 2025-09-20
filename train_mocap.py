@@ -291,6 +291,8 @@ if __name__ == "__main__":
                 scene_model.save(
                     os.path.join(args.model_path, "progress", f"{frameID:05d}")
                 )
+                input("Ready for sync?")
+                print(dataset.get_time_diff())
 
             ## Display optimization progress and metrics
             bar_postfix = []
@@ -371,7 +373,6 @@ if __name__ == "__main__":
         calib_cameras_path = os.path.join(dataset.calib_path, "sparse", "0", "cameras.txt") # Copy cameras.txt from calibration path to model_path
         dataset_cameras_path = os.path.join(args.model_path, "sparse", "0", "cameras.txt")
         shutil.copy2(calib_cameras_path, dataset_cameras_path)
-        dataset.stop()
         cam_stream.stop()
         mocap_stream.stop()
         poses_file.close()
