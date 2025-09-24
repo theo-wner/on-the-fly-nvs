@@ -43,13 +43,9 @@ if __name__ == "__main__":
     np.random.seed(0)
 
     args = get_args()
-    
-    args.viewer_mode = "local"
-    args.lr_poses = 0
-    args.lr_exposure = 0
-    args.lr_depth_scale_offset = 0
-    #args.position_lr_init = 0
-    #args.position_lr_decay = 0
+
+    #args.lr_poses = 0
+    #args.lr_exposure = 0
     
     if args.source_path == "ids":
         cam_stream = IDSStream(frame_rate=45, 
@@ -62,7 +58,7 @@ if __name__ == "__main__":
                                     server_ip="172.22.147.182", 
                                     buffer_size=20)
 
-        dataset = StreamMatcher(cam_stream, mocap_stream, rb_id=2, calib_path="latest", downsampling=3)
+        dataset = StreamMatcher(cam_stream, mocap_stream, rb_id=2, calib_path="latest", undistort=True, downsampling=3)
         is_stream = True
 
     else:
@@ -112,18 +108,30 @@ if __name__ == "__main__":
     min_displacement = max(args.min_displacement * width, 30)
     metrics = {}
 
-    # If capturing live: Save captured images and poses to model_path
+    # If capturing live: Save intrinsics, captured images and poses to model_path
     if is_stream:
         images_dir = os.path.join(args.model_path, "images")
         os.makedirs(images_dir)
 
         poses_dir = os.path.join(args.model_path, "sparse", "0")
         os.makedirs(poses_dir)
-        poses_path = os.path.join(poses_dir, "images.txt")
 
         points3D_path = os.path.join(poses_dir, "points3D.txt") # Dummy file
+        cameras_path = os.path.join(poses_dir, "cameras.txt")
+        poses_path = os.path.join(poses_dir, "images.txt")
+
         with open(points3D_path, "w") as f:
             pass
+
+        image, info = dataset.getnext()
+        camera_matrix = info["camera_matrix"]
+        focal = info["focal"].item()
+        with open(cameras_path, 'w') as f:
+            f.write("# Camera list with one line of data per camera:\n")
+            f.write("#   CAMERA_ID, MODEL, w, h, PARAMS[]\n")
+            f.write("# Number of cameras: 1\n")
+            f.write("# PARAMS for PINHOLE are: w, h, fx, fy, cx, cy\n")
+            f.write(f"1 PINHOLE {width} {height} {focal:.6f} {focal:.6f} {width/2:.6f} {height/2:.6f}\n")
 
         poses_file = open(poses_path, "w")
         poses_file.write("# Image list with two lines of data per image:\n")
@@ -370,9 +378,6 @@ if __name__ == "__main__":
     print("Cleaning up threads...")
     scene_model.join_optimization_thread()
     if is_stream:
-        calib_cameras_path = os.path.join(dataset.calib_path, "sparse", "0", "cameras.txt") # Copy cameras.txt from calibration path to model_path
-        dataset_cameras_path = os.path.join(args.model_path, "sparse", "0", "cameras.txt")
-        shutil.copy2(calib_cameras_path, dataset_cameras_path)
         cam_stream.stop()
         mocap_stream.stop()
         poses_file.close()
