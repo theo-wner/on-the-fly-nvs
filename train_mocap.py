@@ -44,8 +44,8 @@ if __name__ == "__main__":
 
     args = get_args()
 
-    #args.lr_poses = 0
-    #args.lr_exposure = 0
+    args.lr_poses = 0
+    args.lr_exposure = 0
     
     if args.source_path == "ids":
         cam_stream = IDSStream(frame_rate=45, 
