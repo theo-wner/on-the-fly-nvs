@@ -145,19 +145,19 @@ if __name__ == "__main__":
         cameras_path = os.path.join(poses_dir, "cameras.txt")
         poses_path = os.path.join(poses_dir, "images.txt")
 
-        with open(points3D_path, "w") as f:
+        with open(points3D_path, "w") as points3D_file:
             pass
 
         image, info = dataset.getnext()
 
         camera_matrix = info["camera_matrix"]
         focal = info["focal"].item()
-        with open(cameras_path, 'w') as f:
-            f.write("# Camera list with one line of data per camera:\n")
-            f.write("#   CAMERA_ID, MODEL, w, h, PARAMS[]\n")
-            f.write("# Number of cameras: 1\n")
-            f.write("# PARAMS for PINHOLE are: w, h, fx, fy, cx, cy\n")
-            f.write(f"1 PINHOLE {width} {height} {focal:.6f} {focal:.6f} {width/2:.6f} {height/2:.6f}\n")
+        with open(cameras_path, 'w') as cameras_file:
+            cameras_file.write("# Camera list with one line of data per camera:\n")
+            cameras_file.write("#   CAMERA_ID, MODEL, w, h, PARAMS[]\n")
+            cameras_file.write("# Number of cameras: 1\n")
+            cameras_file.write("# PARAMS for PINHOLE are: w, h, fx, fy, cx, cy\n")
+            cameras_file.write(f"1 PINHOLE {width} {height} {focal:.6f} {focal:.6f} {width/2:.6f} {height/2:.6f}\n")
 
         poses_file = open(poses_path, "w")
         poses_file.write("# Image list with two lines of data per image:\n")
