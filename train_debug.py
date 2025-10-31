@@ -52,6 +52,7 @@ if __name__ == "__main__":
     args = get_args()
     args.lr_poses = 0
     args.lr_exposure = 0
+    args.use_colmap_poses = True
 
     # Initialize dataloader
 
@@ -67,7 +68,7 @@ if __name__ == "__main__":
                                     server_ip="172.22.147.182", 
                                     buffer_size=20)
 
-        dataset = StreamMatcher(cam_stream, mocap_stream, rb_id=2, calib_path="latest", undistort=True, downsampling=3)
+        dataset = StreamMatcher(cam_stream, mocap_stream, rb_id=2, calib_path=args.calib_path, undistort=True, downsampling=3)
         is_stream = True
 
     else:

@@ -307,6 +307,16 @@ class SceneModel:
             + (1 - self.lambda_dssim) * l1_loss
             + keyframe.depth_loss_weight * depth_loss
         )
+        """
+        # CHANGE START
+        depth_grad_x = torch.abs(invdepth[:, :, 1:] - invdepth[:, :, :-1])
+        depth_grad_y = torch.abs(invdepth[:, 1:, :] - invdepth[:, :-1, :])
+        depth_smooth_loss = (depth_grad_x.mean() + depth_grad_y.mean())
+
+        λ_depth_smooth = 1
+        loss += λ_depth_smooth * depth_smooth_loss
+        # CHANGE END
+        """
         loss.backward()
 
         # Optimizers

@@ -20,6 +20,10 @@ def get_args():
                         help="Path to the data folder (should have sparse/0/ if using COLMAP or evaluating poses)")
     parser.add_argument('-i', '--images_dir', type=str, default="images",
                         help="source_path/images_dir is the path to the images (with extensions jpg, png or jpeg).")
+    # CHANGE START
+    parser.add_argument('-c', '--calib_path', type=str, default="latest",
+                    help="Path to the calibration folder containing the hand-eye-pose and intrinsics")
+    # CHANGE END
     parser.add_argument('--masks_dir', type=str, default="", 
                         help="If set, source_path/masks_dir is the path to optional masks to apply to the images before computing loss (png).")
     parser.add_argument('--num_loader_threads', type=int, default=4,

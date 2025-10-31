@@ -87,7 +87,10 @@ class Keyframe:
         if not inference_mode: # Only create optimizer in training mode
             params = {
                 "rW2C": {"val": self.rW2C, "lr": args.lr_poses},
+                # CHANGE START
                 "tW2C": {"val": self.tW2C, "lr": args.lr_poses},
+                #"tW2C": {"val": self.tW2C, "lr": 0},
+                # CHANGE END
                 "depth_scale": {
                     "val": self.depth_scale,
                     "lr": args.lr_depth_scale_offset,
