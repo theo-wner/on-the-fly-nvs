@@ -50,8 +50,8 @@ if __name__ == "__main__":
     np.random.seed(0)
 
     args = get_args()
-    args.lr_poses = 0
-    args.lr_exposure = 0
+    #args.lr_poses = 0
+    #args.lr_exposure = 0
     args.use_colmap_poses = True
 
     # Initialize dataloader
