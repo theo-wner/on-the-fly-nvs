@@ -85,11 +85,27 @@ class Keyframe:
 
         # Optimizer
         if not inference_mode: # Only create optimizer in training mode
+            # CHANGE START
+            if args.mocap_gs_mode == "fixed":
+                lr_r = 0
+                lr_t = 0
+            elif args.mocap_gs_mode == "full_opt":
+                lr_r = args.lr_poses
+                lr_t = args.lr_poses
+            elif args.mocap_gs_mode == "rot_opt":
+                lr_r = args.lr_poses
+                lr_t = 0
+            else:
+                print("No MocapGS mode specified. Using full_opt")
+                lr_r = args.lr_poses
+                lr_t = args.lr_poses
+            # CHANGE END
             params = {
-                "rW2C": {"val": self.rW2C, "lr": args.lr_poses},
                 # CHANGE START
-                "tW2C": {"val": self.tW2C, "lr": args.lr_poses},
-                #"tW2C": {"val": self.tW2C, "lr": 0},
+                #"rW2C": {"val": self.rW2C, "lr": args.lr_poses},
+                #"tW2C": {"val": self.tW2C, "lr": args.lr_poses},
+                "rW2C": {"val": self.rW2C, "lr": lr_r},
+                "tW2C": {"val": self.tW2C, "lr": lr_t},
                 # CHANGE END
                 "depth_scale": {
                     "val": self.depth_scale,

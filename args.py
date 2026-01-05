@@ -23,6 +23,8 @@ def get_args():
     # CHANGE START
     parser.add_argument('-c', '--calib_path', type=str, default="latest",
                     help="Path to the calibration folder containing the hand-eye-pose and intrinsics")
+    parser.add_argument('-g', '--mocap_gs_mode', type=str, default="full_opt",
+                    help="MocapGS mode. Options: fixed, full_opt, rot_opt")
     # CHANGE END
     parser.add_argument('--masks_dir', type=str, default="", 
                         help="If set, source_path/masks_dir is the path to optional masks to apply to the images before computing loss (png).")

@@ -8,14 +8,14 @@ python perform_calibration.py --calib_path latest
 python perform_calibration.py --calib_path ./data/calibrations/presentation
 
 # Train online with ids camera input:
-run-nvidia python train_debug.py -s ids -c latest --viewer_mode local 
-run-nvidia python train_debug.py -s ids -c ./data/calibrations/presentation --viewer_mode local 
+run-nvidia python train_mocap_gs.py --mocap_gs_mode fixed -s ids -m ./results/test -c latest --viewer_mode local 
+run-nvidia python train_mocap_gs.py --mocap_gs_mode fixed -s ids -m ./results/test -c ./data/calibrations/presentation --viewer_mode local 
 
 # Train offline with dataset input:
-run-nvidia python train_debug.py -s ./data/buddha_mocap --viewer_mode local 
+run-nvidia python train_mocap_gs.py --mocap_gs_mode fixed -s ./data/buddha_mocap -m ./results/test --viewer_mode local 
 
 # Train offline with dataset input and plot metrics
-run-nvidia python train_debug.py -s ./data/buddha_mocap --test_hold 8 --test_frequency 20
+run-nvidia python train_mocap_gs.py --mocap_gs_mode fixed -s ./data/buddha_mocap -m ./results/test --test_hold 8 --test_frequency 20
 
 # Show results of a trained dataset
 run-nvidia python gaussianviewer.py local results/000030
