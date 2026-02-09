@@ -41,7 +41,7 @@ conda activate sugar
 cd ~/SuGaR
 
 # Run the crop script
-python crop.py --input_path "${RESULT_DATASET}/point_clouds" --abs 3
+python crop.py --input_path "${RESULT_DATASET}/point_clouds" --abs 20
 
 # Create required data structure
 mkdir -p "${RESULT_DATASET}/gs_checkpoint/point_cloud/iteration_7000"
@@ -63,4 +63,5 @@ python extract_mesh.py \
  -c "${RESULT_DATASET}/gs_checkpoint/" \
  -i 7000 \
  -o "${RESULT_DATASET}/mesh" \
+ -d 10000000 \
  --use_vanilla_3dgs True

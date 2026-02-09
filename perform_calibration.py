@@ -73,7 +73,7 @@ with open(checkerboard_file, "w") as f:
 
 # Perform camera calibration
 print("Performing camera calibration...")
-#perform_camera_calibration(calib_path, chessboard)
+perform_camera_calibration(calib_path, chessboard)
 
 # Perform hand-eye calibration
 print("Performing hand-eye calibration...")
